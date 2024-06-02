@@ -1,0 +1,5 @@
+[meta]
+creation_timestamp = "1716907488534408 2024-05-28 18:44:48.534408 +04:00"
+
+[packages]
+pumpmint = { uuid = "SPDALPO3WM7RMHUOBVZQ35X4ME", uuid_custom = false }
