@@ -39,8 +39,7 @@
             recipient: address, 
             ctx: &mut TxContext
             ) {
-                let currentSupply = current_supply(treasury_cap);
-                let currentMax = currentSupply + amount;
+                let currentMax = current_supply(treasury_cap) + amount;
                 assert!(currentMax <= MAX_SUPPLY, EMAXSUPPLYREACHED);
                 coin::mint_and_transfer(treasury_cap, amount, recipient, ctx);
         }

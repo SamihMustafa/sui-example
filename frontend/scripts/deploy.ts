@@ -19,7 +19,7 @@ if(!priv_key){
 }
 
 const keypair = Ed25519Keypair.fromSecretKey(fromB64(priv_key).slice(1))
-const client = new SuiClient({ url: "http://localhost:44340" })
+const client = new SuiClient({ url: "https://fullnode.testnet.sui.io:443" })
 
 const path_to_scripts = dirname(fileURLToPath(import.meta.url))
 const path_to_contracts = path.join(path_to_scripts, "../../pumpmint")
@@ -28,7 +28,7 @@ console.log(path_to_contracts)
 
 console.log("Building Contracts")
 const {dependencies, modules } = JSON.parse(
-    execSync(`lsui move build --dump-bytecode-as-base64 --path ${path_to_contracts}`, { encoding: "utf-8"})
+    execSync(`sui move build --dump-bytecode-as-base64 --path ${path_to_contracts}`, { encoding: "utf-8"})
 )
 
 console.log("Deploying Contracts")
@@ -93,44 +93,16 @@ const deployed_address: any = {
     PACKAGE_ID: published_change.packageId
 }
 
-const place_type = `${deployed_address.PACKAGE_ID}::place::Place`
-const place_id = find_one_by_type(objectChanges, place_type)
-if(!place_id){
-    console.log("Error: could not find place object")
-    process.exit(1)
+const treasuryCap_type = `0x2::coin::TreasuryCap<${deployed_address.PACKAGE_ID}::pumpmint::PUMPMINT>`;
+const treasuryCap_id = find_one_by_type(objectChanges, treasuryCap_type);
+if (!treasuryCap_id) {
+  console.log("Error: could not find treasuryCap object");
+  process.exit(1);
 }
 
-deployed_address.PLACE_ID = place_id
-
-const quarant_trx = new TransactionBlock()
-quarant_trx.moveCall({
-    target: `${packageId}::place::get_quadrants`,
-    arguments: [quarant_trx.object(place_id)]
-})
-
-console.log("Getting addresses of quadarants")
-const read_results = await client.devInspectTransactionBlock({
-    sender: keypair.toSuiAddress(),
-    transactionBlock: quarant_trx
-})
-
-
-const return_values = read_results?.results?.[0].returnValues?.[0]?.[0]
-if(!return_values){
-    console.log("Error: Return values not found")
-    process.exit(1)
-}
-
-console.log(return_values)
-
-const bcs = new BCS(getSuiMoveConfig())
-
-const quadrants = bcs.de("vector<address>", new Uint8Array(return_values)).map((address: string) => "0x" + address)
-deployed_address.QUADRANTS = quadrants
-console.log(quadrants)
-
+deployed_address.TREASURY_CAP_ID = treasuryCap_id;
 
 const deployed_path = path.join(path_to_scripts, "../src/deployed_objects.json")
-const index_path = path.join(path_to_scripts, "../../sui-place-indexer/get-place-board/deployed_objects.json")
+//const index_path = path.join(path_to_scripts, "../../sui-place-indexer/get-place-board/deployed_objects.json")
 writeFileSync(deployed_path, JSON.stringify(deployed_address, null, 4))
-writeFileSync(index_path, JSON.stringify(deployed_address, null, 4))
+//writeFileSync(index_path, JSON.stringify(deployed_address, null, 4))
