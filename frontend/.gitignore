@@ -24,5 +24,4 @@ dist-ssr
 *.sw?
 .env
 build/
-deployed_objects.json
 
