@@ -1,13 +1,21 @@
 #[test_only]
 module pumpmint::pumpmint_tests {
-    // uncomment this line to import the module
-    use pumpmint::pumpmint::{Self, PUMPMINT};
-    use sui::coin::{Self, TreasuryCap};
+
+    use pumpmint::pumpmint::{Self, PUMPMINT_TREASURY};
     use sui::tx_context::{Self};
-    use sui::test_scenario::{Self as test};
+    use sui::test_scenario::{Self as test, Scenario};
     use sui::test_utils::{Self as assert};
 
-    struct S_PUMPMINT has drop {}
+    #[test_only]
+    public fun take_treasury(scenario: &Scenario): PUMPMINT_TREASURY {
+        let treasury = test::take_shared<PUMPMINT_TREASURY>(scenario);
+        treasury
+    }
+
+    #[test_only]
+    public fun return_treasury(treasurycap: PUMPMINT_TREASURY) {
+         test::return_shared<PUMPMINT_TREASURY>(treasurycap);
+    }
 
    // The `init` is not run in tests, and normally a test_only function is
     // provided so that the module can be initialized in tests. Having it public
@@ -25,15 +33,15 @@ module pumpmint::pumpmint_tests {
 
         test::next_tx(&mut scenario, addr1);
         {   
-            let treasurycap = test::take_shared<TreasuryCap<PUMPMINT>>(&scenario);
-            assert::assert_eq(pumpmint::current_supply(&mut treasurycap), 0);
-            test::return_shared<TreasuryCap<PUMPMINT>>(treasurycap);
+            let treasurycap = take_treasury(&scenario);
+            assert::assert_eq(pumpmint::current_supply(&treasurycap), 0);
+            return_treasury(treasurycap);
         };
 
         test::end(scenario);  
     }
 
-    #[test]
+   #[test]
     public fun test_minted_supply() {
          let addr1 = @0xA;
         // Begins a multi-transaction scenario with addr1 as the sender
@@ -46,10 +54,10 @@ module pumpmint::pumpmint_tests {
 
          test::next_tx(&mut scenario, addr1);
         {   
-            let treasurycap = test::take_shared<TreasuryCap<PUMPMINT>>(&scenario);
-            pumpmint::mint(&mut treasurycap, 10, addr1, ctx);
-            assert::assert_eq(pumpmint::current_supply(&mut treasurycap), 10);
-            test::return_shared<TreasuryCap<PUMPMINT>>(treasurycap);
+            let treasurycap = take_treasury(&scenario);
+            pumpmint::mint(&mut treasurycap, 10, ctx);
+            assert::assert_eq(pumpmint::current_supply(&treasurycap), 10);
+            return_treasury(treasurycap);
         };
 
         test::end(scenario);  
@@ -69,18 +77,18 @@ module pumpmint::pumpmint_tests {
 
          test::next_tx(&mut scenario, addr1);
         {   
-            let treasurycap = test::take_shared<TreasuryCap<PUMPMINT>>(&scenario);
-            pumpmint::mint(&mut treasurycap, 10, addr1, ctx);
-            assert::assert_eq(pumpmint::current_supply(&mut treasurycap), 10);
-            test::return_shared<TreasuryCap<PUMPMINT>>(treasurycap);
+            let treasurycap = take_treasury(&scenario);
+            pumpmint::mint(&mut treasurycap, 10, ctx);
+            assert::assert_eq(pumpmint::current_supply(&treasurycap), 10);
+            return_treasury(treasurycap);
         };
 
         test::next_tx(&mut scenario, addr2);
         {   
-            let treasurycap = test::take_shared<TreasuryCap<PUMPMINT>>(&scenario);
-            pumpmint::mint(&mut treasurycap, 50, addr2, ctx);
-            assert::assert_eq(pumpmint::current_supply(&mut treasurycap), 60);
-            test::return_shared<TreasuryCap<PUMPMINT>>(treasurycap);
+            let treasurycap = take_treasury(&scenario);
+            pumpmint::mint(&mut treasurycap, 50, ctx);
+            assert::assert_eq(pumpmint::current_supply(&treasurycap), 60);
+            return_treasury(treasurycap);
         };
     
         test::end(scenario);  
@@ -101,10 +109,10 @@ module pumpmint::pumpmint_tests {
 
         test::next_tx(&mut scenario, addr1);
         {   
-            let treasurycap = test::take_shared<TreasuryCap<PUMPMINT>>(&scenario);
-            pumpmint::mint(&mut treasurycap, 1_000_000_000_001, addr1, ctx);
-            assert::assert_eq(pumpmint::current_supply(&mut treasurycap), 0);
-            test::return_shared<TreasuryCap<PUMPMINT>>(treasurycap);
+            let treasurycap = take_treasury(&scenario);
+            pumpmint::mint(&mut treasurycap, 1_000_000_000_001, ctx);
+            assert::assert_eq(pumpmint::current_supply(&treasurycap), 0);
+            return_treasury(treasurycap);
         };
 
         test::end(scenario);  

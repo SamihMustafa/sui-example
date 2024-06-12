@@ -1,20 +1,14 @@
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import {ConnectButton} from '@suiet/wallet-kit';
+import TokenMinting from './pumpmint'
+
 
 function App() {
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <ConnectButton/>
+      <h1>Token Minting Page</h1>
+      <TokenMinting />
+    </div>
     </>
   )
 }

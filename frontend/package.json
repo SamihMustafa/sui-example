@@ -12,14 +12,18 @@
   },
   "dependencies": {
     "-": "^0.0.1",
-    "@mysten/sui.js": "^0.54.1",
-    "@suiet/wallet-kit": "^0.2.24",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.19",
+    "@mysten/sui.js": "^0.42.0",
     "dotenv": "^16.4.5",
     "env": "^0.0.2",
+    "ethos-connect": "^0.0.194",
     "files": "^3.0.1",
     "for": "^0.0.1-dev.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "websocket": "^1.0.35"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

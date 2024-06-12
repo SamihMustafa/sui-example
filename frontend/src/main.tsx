@@ -2,17 +2,14 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
-import {WalletProvider, SuiTestnetChain, Chain} from '@suiet/wallet-kit';
-import '@suiet/wallet-kit/style.css';
-
-const SupportedChains: Chain[] = [
-  SuiTestnetChain
-]
+import { Chain, EthosConnectProvider } from 'ethos-connect'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-  <WalletProvider chains={SupportedChains}>
+  <EthosConnectProvider ethosConfiguration={{
+    chain: Chain.SUI_TESTNET,  network: "https://fullnode.testnet.sui.io:443"
+    }}>
     <App/>
-  </WalletProvider>
+  </EthosConnectProvider>
   </React.StrictMode>
 )

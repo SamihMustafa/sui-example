@@ -9,7 +9,6 @@ import path, { dirname } from "path"
 import { execSync } from "child_process"
 import { fileURLToPath } from "url"
 import { writeFileSync } from "fs"
-import { BCS, getSuiMoveConfig } from '@mysten/bcs'
 
 console.log("Hello World")
 const priv_key = process.env.PRIVATE_KEY
@@ -93,7 +92,7 @@ const deployed_address: any = {
     PACKAGE_ID: published_change.packageId
 }
 
-const treasuryCap_type = `0x2::coin::TreasuryCap<${deployed_address.PACKAGE_ID}::pumpmint::PUMPMINT>`;
+const treasuryCap_type = `${packageId}::pumpmint::PUMPMINT_TREASURY`;
 const treasuryCap_id = find_one_by_type(objectChanges, treasuryCap_type);
 if (!treasuryCap_id) {
   console.log("Error: could not find treasuryCap object");
