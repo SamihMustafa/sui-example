@@ -19,7 +19,7 @@ const MintAmountSlider: React.FC<TokenMintPageProps> = ({
     const [isEditable, setIsEditable] = useState(true);
 
     // Handle slider value change
-    const handleSliderChange = (event: Event, value: number | number[]) => {
+    const handleSliderChange = (_: Event, value: number | number[]) => {
         setMintAmount(value as number);
       };
 
